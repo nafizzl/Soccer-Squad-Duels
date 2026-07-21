@@ -1,4 +1,4 @@
-# FC Table Duels — Product Requirements Document (MVP)
+# Soccer Squad Duels! — Product Requirements Document (MVP)
 **Version:** 1.0 (Working Title)
 **Target Build Time:** 60–120 hours (solo Luau developer)
 **Platform:** Roblox (PC / Mobile / Console via ScreenGui + GamepadService)
