@@ -18,3 +18,20 @@
     *   Configured `HUD` to enable on join, `ExitQueue` to enable only when locked in a spot, and `DuelGui` to enable once the countdown completes.
     *   Created `ExitQueueEvent` remote inside `ReplicatedStorage`.
     *   Programmatically wrote and injected the client-side `ExitScript` inside `StarterGui.ExitQueue.ExitFrame.ExitButton` in Roblox Studio.
+
+## July 22, 2026
+
+    *   Designed and built automated C# player database generator (`Generator.cs`) with Unicode diacritics stripping, name normalization, and token alias matching.
+    *   Enforced 100% official licensing verification by filtering all candidate players strictly against `fut22players.csv` (Icons/Heroes) and `EAFC26-Men.csv` (Active players).
+    *   Extracted and integrated official player `Nationality` attributes across all card records.
+    *   Implemented realistic Pyramid Rating Distribution & 5-Rarity Hierarchy across 1,000 cards:
+        *   **Legend (50 Cards):** 94–99 OVR (Top G.O.A.T.s & Icons).
+        *   **Stars (150 Cards):** 88–93 OVR (Elite world-class superstars).
+        *   **Gold (350 Cards):** 80–87 OVR (Top club starters).
+        *   **Silver (300 Cards):** 70–79 OVR (Rotation squad players).
+        *   **Bronze (150 Cards):** 65–69 OVR (Base cards & young talents).
+    *   Implemented proportional face stat scaling (Pace, Shooting, Passing, Dribbling, Defending, Physical) relative to target OVR while maintaining authentic player skill profiles (e.g. keeping Messi's dribbling high and defense low).
+    *   Structured player data into dual databases inside `ReplicatedStorage/Data/`:
+        *   [CardDatabaseAllTime.lua] — 1,000 all-time historical and modern legends ranked exclusively by `anothertop1000.txt`.
+        *   [CardDatabaseCurrent.lua] — 1,000 active modern players ranked strictly by `EAFC26-Men.csv` ratings.
+        *   [CardDatabase.lua] — Central wrapper module exporting typed access to both `AllTime` and `Current` databases.

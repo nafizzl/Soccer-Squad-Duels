@@ -11,7 +11,11 @@ The local workspace directory contains files synced to Roblox Studio using **Roj
 *   📁 **ServerScriptService/**
     *   📄 [QueueManager.server.lua](file:///c:/Users/Nafiz/Labib/Soccer-Squad-Duels/ServerScriptService/QueueManager.server.lua) — The central server script controlling matchmaking and player tracking. It listens to `.Touched` events on field spots, anchors/aligns characters, updates floating status billboards, runs starting countdowns, and handles player exit/death releases.
 *   📁 **ReplicatedStorage/**
-    *   *(Note: This folder is synced locally but holds runtime assets and remote events. Currently, the server automatically instantiates `ExitQueueEvent` here.)*
+    *   📁 **Data/**
+        *   📄 [CardDatabase.lua](file:///c:/Users/Nafiz/Labib/Soccer-Squad-Duels/ReplicatedStorage/Data/CardDatabase.lua) — Unified wrapper module exporting typed access to both `AllTime` and `Current` card databases.
+        *   📄 [CardDatabaseAllTime.lua](file:///c:/Users/Nafiz/Labib/Soccer-Squad-Duels/ReplicatedStorage/Data/CardDatabaseAllTime.lua) — Master card database containing 1,000 all-time historical icons and modern stars ranked by `anothertop1000.txt`.
+        *   📄 [CardDatabaseCurrent.lua](file:///c:/Users/Nafiz/Labib/Soccer-Squad-Duels/ReplicatedStorage/Data/CardDatabaseCurrent.lua) — Master card database containing 1,000 active modern players ranked strictly by EA FC 26 ratings.
+    *   *(Note: The server automatically instantiates `ExitQueueEvent` remote here at runtime.)*
 *   📁 **ServerStorage/**
     *   *(Note: Currently empty, reserved for server-only models/modules.)*
 *   📁 **ReplicatedFirst/**
