@@ -61,3 +61,4 @@
         *   Displays a high-visibility 2D screen banner (`MatchResultBanner`) with outcome (`VICTORY!`, `DEFEAT!`, `MATCH DRAW!`) and score summary[cite: 6].
         *   Auto-closes `DuelGui` after 4 seconds to transition players back to physical field view[cite: 6].
         *   Server updates 3D `StatusAnchor` `BillboardGui` with winner text (`Player 1 won!`), releases player controls, teleports characters 10 studs back, and resets field status text to default after a 5-second window[cite: 6].
+        * Removed fallback to table in card selected event in QueueManager to ensure exploiters can't inject card selections and MUST use the server-determined cards via candidate index [cite: 6].

@@ -459,22 +459,23 @@ DuelEvents.RollCardsEvent.OnServerEvent:Connect(function(player, slotFrameName)
     DuelEvents.RollCardsEvent:FireClient(player, slotFrameName, candidates, reelPool)
 end)
 
--- 6. Card Selected Event (Validates candidate index 1, 2, or 3 across 11 unique slot keys)
+-- 6. Card Selected Event (SECURE: Strictly validates candidate index 1, 2, or 3)
 DuelEvents.CardSelectedEvent.OnServerEvent:Connect(function(player, slotFrameName, cardChoice)
     local fieldIndex, state, isP1, opponent = getPlayerMatch(player)
     if not fieldIndex or not state or not state.matchActive then return end
 
-    local cardData = nil
-    if type(cardChoice) == "number" then
-        local candTable = isP1 and state.p1Candidates and state.p1Candidates[slotFrameName] or state.p2Candidates and state.p2Candidates[slotFrameName]
-        if candTable and candTable[cardChoice] then
-            cardData = candTable[cardChoice]
-        end
-    elseif type(cardChoice) == "table" then
-        cardData = cardChoice
+    -- STRICT SECURITY CHECK: Reject anything that isn't a valid integer index (1, 2, or 3)
+    if type(cardChoice) ~= "number" or cardChoice < 1 or cardChoice > 3 then 
+        warn("Exploit attempt blocked from player:", player.Name)
+        return 
     end
 
-    if not cardData then return end
+    local candTable = isP1 and state.p1Candidates and state.p1Candidates[slotFrameName] or state.p2Candidates and state.p2Candidates[slotFrameName]
+    if not candTable or not candTable[cardChoice] then 
+        return 
+    end
+
+    local cardData = candTable[cardChoice]
 
     local myDraft = isP1 and state.p1Draft or state.p2Draft
     myDraft[slotFrameName] = cardData
@@ -483,12 +484,11 @@ DuelEvents.CardSelectedEvent.OnServerEvent:Connect(function(player, slotFrameNam
         DuelEvents.OpponentSlotUpdatedEvent:FireClient(opponent, slotFrameName, cardData.Rarity)
     end
 
-    local p1Count = 0
+    -- Check if both players have selected all 11 unique formation slots
+    local p1Count, p2Count = 0, 0
     for _ in pairs(state.p1Draft) do p1Count += 1 end
-    local p2Count = 0
     for _ in pairs(state.p2Draft) do p2Count += 1 end
 
-    -- Check if both players have selected all 11 unique formation slots
     if p1Count >= 11 and p2Count >= 11 then
         local p1Sum, p2Sum = 0, 0
         for _, card in pairs(state.p1Draft) do p1Sum += card.OVR end
@@ -497,7 +497,6 @@ DuelEvents.CardSelectedEvent.OnServerEvent:Connect(function(player, slotFrameNam
         local p1FinalOVR = math.floor(p1Sum / 11)
         local p2FinalOVR = math.floor(p2Sum / 11)
 
-        -- Notify clients with final OVRs
         if state.player1 then
             DuelEvents.MatchCompletedEvent:FireClient(state.player1, p1FinalOVR, p2FinalOVR)
         end
@@ -513,14 +512,13 @@ DuelEvents.CardSelectedEvent.OnServerEvent:Connect(function(player, slotFrameNam
                 winnerText = (state.player2 and state.player2.Name or "Player 2") .. " won!"
             end
 
-            -- Update 3D Billboard Gui on field
             local field = workspace:FindFirstChild("Soccer Field " .. fieldIndex)
             if field then
                 local statusAnchor = field:FindFirstChild("StatusAnchor", true)
                 updateAnchorText(statusAnchor, winnerText, Color3.fromRGB(255, 215, 0))
             end
 
-            task.wait(5)
+            task.wait(4)
 
             state.matchActive = false
             local p1Ref = state.player1
@@ -529,7 +527,6 @@ DuelEvents.CardSelectedEvent.OnServerEvent:Connect(function(player, slotFrameNam
             if p1Ref then releasePlayer(p1Ref) end
             if p2Ref then releasePlayer(p2Ref) end
 
-            -- Reset field status text back to default after 5 seconds
             task.wait(5)
             if not state.countdownActive and not state.matchActive then
                 updateFieldLabels(fieldIndex)
